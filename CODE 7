@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+int data;
+struct Node *prev, *next;
+};
+
+struct Deque
+{
+struct Node *front;
+struct Node *rear;
+};
+//Create newnode
+struct Node* newNode(int data)
+{
+struct Node *node = (struct Node*)malloc(sizeof(struct Node));
+node->data = data;
+node->prev = NULL;
+node->next = NULL;
+return node;
+}
+
+void insertFront(struct Deque *d, int data)
+{
+struct Node *node = newNode(data);
+if (d->front == NULL)
+{
+d->front = node;
+d->rear = node;
+}
+
+else
+{
+node->next = d->front;
+d->front->prev = node;
+d->front = node;
+}
+}
+void insertRear(struct Deque *d, int data)
+{
+struct Node *node = newNode(data);
+if (d->rear == NULL)
+{
+d->front = node;
+d->rear = node;
+}
+else
+{
+node->prev = d->rear;
+d->rear->next = node;
+d->rear = node;
+}
+}
+
+void deleteFront(struct Deque *d)
+{
+if (d->front == NULL)
+return;
+
+struct Node *temp = d->front;
+if (d->front == d->rear)
+{
+d->front = NULL;
+d->rear = NULL;
+
+}
+else
+{
+d->front = d->front->next;
+d->front->prev = NULL;
+}
+free(temp);
+}
+void deleteRear(struct Deque *d)
+{
+if (d->rear == NULL)
+return;
+struct Node *temp = d->rear;
+if (d->front == d->rear)
+{
+d->front = NULL;
+d->rear = NULL;
+}
+else
+{
+d->rear = d->rear->prev;
+d->rear->next = NULL;
+}
+
+free(temp);
+}
+
+void display(struct Deque *d)
+{
+struct Node *temp = d->front;
+while (temp != NULL)
+
+{
+printf("%d ", temp->data);
+temp = temp->next;
+}
+printf("\n");
+}
+int main()
+{
+struct Deque d = {NULL, NULL};
+insertFront(&d, 10);
+insertRear(&d, 20);
+insertFront(&d, 5);
+display(&d); // Output: 5 10 20
+deleteFront(&d);
+deleteRear(&d);
+display(&d); // Output: 10
+
+return 0;
+}
