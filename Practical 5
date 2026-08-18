@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <string.h>
+// Function to return maximum of two numbers
+int max(int a, int b)
+{
+return (a > b) ? a : b;
+}
+void findLCS(char *S1, char *S2)
+{
+int m = strlen(S1);
+int n = strlen(S2);
+int dp[m + 1][n + 1];
+printf("\n******** LONGEST COMMON SUBSEQUENCE ********\n");
+printf("\nString 1 : %s", S1);
+printf("\nString 2 : %s\n", S2);
+printf("\nLength of String 1 = %d", m);
+printf("\nLength of String 2 = %d\n", n);
+//printf("\nBuilding the DP Table...\n");
+// Build DP Table
+for(int i=0;i<=m;i++)
+{
+for(int j=0;j<=n;j++)
+{
+if(i==0 || j==0)
+{
+dp[i][j]=0;
+}
+else if(S1[i-1]==S2[j-1])
+{
+dp[i][j]=dp[i-1][j-1]+1;
+//printf("\nMatch Found : '%c' == '%c'",S1[i-1],S2[j-1]);
+//printf("\nDP[%d][%d] = DP[%d][%d] + 1 = %d",i,j,i-1,j-1,dp[i][j]);
+}
+else
+{
+dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+//printf("\nNo Match : '%c' != '%c'",S1[i-1],S2[j-1]);
+//printf("\nDP[%d][%d] = max(%d,%d) = %d",i,j,dp[i-1][j],dp[i][j-1],dp[i][j]);
+}
+}
+}
+// Display DP Table
+printf("\n\n========================================");
+printf("\nDynamic Programming Table");
+printf("\n========================================\n\n");
+printf(" ");
+for(int j=0;j<n;j++)
+printf("%4c",S2[j]);
+printf("\n");
+for(int i=0;i<=m;i++)
+{
+if(i==0)
+printf(" ");
+else
+printf("%c ",S1[i-1]);
+for(int j=0;j<=n;j++)
+{
+printf("%4d",dp[i][j]);
+}
+printf("\n");
+}
+int lcsLength=dp[m][n];
+printf("\nLength of Longest Common Subsequence = %d\n",lcsLength);
+char lcs[lcsLength+1];
+lcs[lcsLength]='\0';
+printf("\nBacktracking to find LCS...\n");
+int i=m;
+int j=n;
+int index=lcsLength;
+while(i>0 && j>0)
+{
+if(S1[i-1]==S2[j-1])
+{
+printf("\nCharacter '%c' is part of LCS",
+S1[i-1]);
+lcs[index-1]=S1[i-1];
+i--;
+j--;
+index--;
+}
+else if(dp[i-1][j] > dp[i][j-1])
+{
+printf("\nMove UP from DP[%d][%d]",i,j);
+i--;
+}
+else
+{
+printf("\nMove LEFT from DP[%d][%d]",i,j);
+j--;
+}
+}
+printf("\n\nLongest Common Subsequence = %s\n",lcs);
+}
+int main()
+{
+char S1[]="AGGTAB";
+char S2[]="GXTXAYB";
+findLCS(S1,S2);
+return 0;
+}
